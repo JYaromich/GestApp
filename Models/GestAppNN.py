@@ -63,9 +63,10 @@ class GestRecogNN(torch.nn.Module):
             
     def __init__(self, in_features, out_features):
         super().__init__()
-        self.base_block = GestRecogBlock(in_features=in_features, out_features=32)
-        self.base_block_2 = GestRecogBlock(in_features=32, out_features=64)
-        self.base_block_3 = GestRecogBlock(in_features=64, out_features=128)
+        self.base_block = GestRecogBlock(in_features=in_features, out_features=64)
+        self.base_block_2 = GestRecogBlock(in_features=64, out_features=128)
+        self.base_block_3 = GestRecogBlock(in_features=128, out_features=256)
+        self.base_block_4 = GestRecogBlock(in_features=256, out_features=512)
         self.classifier = nn.Sequential(
             self.get_dense_block(input_features=100352, out_features=256, p_dropout=0.2),
             self.get_dense_block(input_features=256, out_features=128, p_dropout=0.2),
@@ -76,6 +77,7 @@ class GestRecogNN(torch.nn.Module):
         x = self.base_block(x)
         x = self.base_block_2(x)
         x = self.base_block_3(x)
+        x = self.base_block_4(x)
         x = x.view(x.size(0), -1)
         x = self.classifier(x)
         return x
